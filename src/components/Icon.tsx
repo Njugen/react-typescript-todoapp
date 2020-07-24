@@ -2,15 +2,19 @@ import React, { Component } from "react";
 
 interface StateRules {}
 
-interface PropRules {}
+interface PropRules {
+  // The CSS needed in order for an icon image to show up
+  iconReference: string;
+
+  // on
+  onClick?: (event: React.MouseEvent) => void;
+}
 
 class IconComponent extends Component<PropRules, StateRules> {
   render = () => {
-    return (
-      <div>
-        <div></div>
-      </div>
-    );
+    const { iconReference, onClick: onClickRaise } = this.props;
+
+    return <button className={iconReference} onClick={onClickRaise}></button>;
   };
 }
 
