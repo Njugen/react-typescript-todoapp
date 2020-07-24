@@ -11,9 +11,9 @@ class HeaderComponent extends Component<PropRules, StateRules> {
     return (
       <div className="row" id="header">
         <div className="col-auto mr-auto">
-          <LogoComponent />
+          <LogoComponent text="Welcome to my app" />
         </div>
-        <div className="col-4">abc</div>
+        <div className="col-4 pull-right">abc</div>
       </div>
     );
   };

@@ -1,0 +1,12 @@
+.icon-component {
+  background: transparent;
+  border: 0px;
+}
+
+.icon-component {
+  display: inline-block;
+}
+
+.icon-enable-hover-pointer {
+  cursor: pointer;
+}

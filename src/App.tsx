@@ -1,6 +1,5 @@
 import React from "react";
 import HeaderComponent from "./components/Header";
-require("bootstrap");
 
 function App() {
   return (
