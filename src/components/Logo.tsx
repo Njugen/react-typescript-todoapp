@@ -6,15 +6,28 @@ interface StateRules {}
 
 interface PropRules {
   text: string;
+  onClick?: (event: React.MouseEvent) => void;
 }
 
+type DynamicLogoTextStyle = {
+  marginLeft: string;
+  cursor?: string;
+};
+
 class LogoComponent extends Component<PropRules, StateRules> {
-  handleIconClick: (event: React.MouseEvent) => void = (event) => {
-    console.log("Logo has been clicked");
+  private getDynamicLogoTextStyle: (size: number) => DynamicLogoTextStyle = (
+    size
+  ) => {
+    const { onClick: onClickRaise } = this.props;
+
+    return {
+      marginLeft: size + 10 + "px",
+      cursor: onClickRaise && "pointer",
+    };
   };
 
   render = () => {
-    const { text } = this.props;
+    const { text, onClick: onClickRaise } = this.props;
     const iconSize: number = 30;
 
     return (
@@ -23,10 +36,14 @@ class LogoComponent extends Component<PropRules, StateRules> {
           iconReference="far fa-calendar-alt"
           size={iconSize}
           color="#801717"
-          onClick={this.handleIconClick}
+          onClick={onClickRaise}
           id="logo-image"
         />
-        <span id="logo-text" style={{ marginLeft: iconSize + 10 + "px" }}>
+        <span
+          id="logo-text"
+          onClick={onClickRaise}
+          style={this.getDynamicLogoTextStyle(iconSize)}
+        >
           {text}
         </span>
       </div>
