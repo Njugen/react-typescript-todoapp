@@ -1,8 +1,29 @@
 .calendar-container {
   border: 1px solid #e2e2e2;
+  background: #ffffff;
   color: #626262;
-  height: 300px;
-  width: 300px;
   position: absolute;
   display: none;
+  z-index: 1000;
+}
+
+.calendar-table {
+  text-align: center;
+}
+
+.calendar-table > thead {
+  border-bottom: 1px solid #d2d2d2;
+}
+
+.calendar-table tr {
+  padding: 5px;
+}
+
+.calendar-table tr th {
+  padding: 5px;
+}
+
+.calendar-table tr td {
+  padding: 5px;
+  font-size: 0.9rem;
 }

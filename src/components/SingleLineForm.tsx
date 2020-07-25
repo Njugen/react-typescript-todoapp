@@ -7,6 +7,9 @@ interface StateRules {
 
 interface PropRules {
   value: string;
+  placeholder?: string;
+  buttonText?: string;
+  buttonIconReference?: string;
   onButtonClick: (event: React.FormEvent) => void;
 }
 
@@ -22,7 +25,12 @@ class SingleLineFormComponent extends Component<PropRules, StateRules> {
   };
 
   render = () => {
-    const { onButtonClick: onButtonClickRaise } = this.props;
+    const {
+      onButtonClick: onButtonClickRaise,
+      buttonText,
+      buttonIconReference,
+      placeholder,
+    } = this.props;
     const { inputValue } = this.state;
 
     return (
@@ -31,12 +39,17 @@ class SingleLineFormComponent extends Component<PropRules, StateRules> {
           type="text"
           className="singleline-form-text-input col-11"
           value={inputValue}
+          placeholder={placeholder}
           onChange={this.handleTextInputChange}
         />
         <button
-          className="fas fa-calendar-day singleline-form-submit-button"
+          className={
+            buttonIconReference + " singleline-form-submit-button col-1"
+          }
           onClick={onButtonClickRaise}
-        ></button>
+        >
+          {buttonText || ""}
+        </button>
       </form>
     );
   };

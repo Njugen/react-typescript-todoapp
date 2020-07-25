@@ -64,6 +64,7 @@ class DateSelectorComponent extends Component<PropRules, StateRules> {
         <SingleLineFormComponent
           value=""
           onButtonClick={this.handleButtonClick}
+          buttonIconReference="fas fa-calendar-day"
         />
         <div className="row">
           <CalendarComponent
