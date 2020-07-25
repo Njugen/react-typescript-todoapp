@@ -41,7 +41,7 @@ class IconComponent extends Component<PropRules, StateRules> {
     const { size, color, onClick: onClickRaise } = this.props;
 
     return {
-      fontSize: (size || 120) + "px",
+      fontSize: (size || 20) + "px",
       color: color || "#000",
       cursor: onClickRaise && "pointer",
     };

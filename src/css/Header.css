@@ -2,3 +2,11 @@
   background: #1976d2;
   height: 60px;
 }
+
+#headerbar-right-side {
+  text-align: right;
+}
+
+#headerbar-right-side > #twitter-icon {
+  margin: 1rem;
+}
