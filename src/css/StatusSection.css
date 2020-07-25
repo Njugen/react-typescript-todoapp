@@ -1,6 +1,7 @@
 .status-section-container {
   margin: 1rem 0;
   position: relative;
+  height: 100px;
 }
 
 .status-section-icon {

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import SingleLineFormComponent from "./SingleLineForm";
 
 interface StateRules {}
 
@@ -7,8 +8,8 @@ interface PropRules {}
 class DateSelectorComponent extends Component<PropRules, StateRules> {
   render = () => {
     return (
-      <div>
-        <div></div>
+      <div className="date-selector-container">
+        <SingleLineFormComponent />
       </div>
     );
   };
