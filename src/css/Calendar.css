@@ -1,0 +1,8 @@
+.calendar-container {
+  border: 1px solid #e2e2e2;
+  color: #626262;
+  height: 300px;
+  width: 300px;
+  position: absolute;
+  display: none;
+}

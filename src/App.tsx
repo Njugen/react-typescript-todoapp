@@ -18,6 +18,9 @@ function App() {
             <DateSelectorComponent />
           </div>
         </div>
+        <div className="row">
+          <div className="col-8 mx-auto">abc</div>
+        </div>
       </div>
     </div>
   );
