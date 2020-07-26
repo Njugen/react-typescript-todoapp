@@ -97,12 +97,11 @@ class CalendarComponent extends Component<PropRules, StateRules> {
     };
   };
 
-  private getPaddingDataBlocks: (
-    padding: number,
-    nextMonth?: boolean
-  ) => JSX.Element[] = (padding, nextMonth) => {
-    const blocks: JSX.Element[] = [];
+  private getPaddingPrefixBlocks: (padding: number) => JSX.Element[] = (
+    padding
+  ) => {
     const { selectedMonth, selectedYear } = this.state;
+    const blocks: JSX.Element[] = [];
 
     // The week starts on Sunday. If there is no weekday padding based on the date, then add a full
     // padding to ensure the first months date starts on sunday.
@@ -110,29 +109,38 @@ class CalendarComponent extends Component<PropRules, StateRules> {
       padding = 7;
     }
 
-    // Push the blocks of the last few days of the next month
-    if (nextMonth && nextMonth === true) {
-      //Push the first few days of the next month, by
-      let lastWeekDaysPadding =
-        7 - new Date(selectedYear, selectedMonth + 1, 0).getDay();
+    const numberOfDaysPrevMonth: number = this.getDateRange(
+      selectedMonth - 1,
+      selectedYear
+    ).days;
 
-      for (let i = 0; i < lastWeekDaysPadding; i++) {
-        blocks.push(<td key={"padding-id-" + i}>{i + 1}</td>);
-      }
-    } else {
-      const numberOfDaysPrevMonth: number = this.getDateRange(
-        selectedMonth - 1,
-        selectedYear
-      ).days;
-
-      for (let i = 0; i < padding - 1; i++) {
-        blocks.push(
-          <td key={"padding-id-" + i}>{numberOfDaysPrevMonth - i}</td>
-        );
-      }
-      blocks.reverse();
+    for (let i = 0; i < padding - 1; i++) {
+      blocks.push(
+        <td className={"calendar-padding-block"} key={"padding-id-" + i}>
+          {numberOfDaysPrevMonth - i}
+        </td>
+      );
     }
+    blocks.reverse();
 
+    return blocks;
+  };
+
+  private getPaddingSuffixBlocks: () => JSX.Element[] = () => {
+    const { selectedMonth, selectedYear } = this.state;
+    const blocks: JSX.Element[] = [];
+
+    //Push the first few days of the next month, by
+    let lastWeekDaysPadding =
+      7 - new Date(selectedYear, selectedMonth + 1, 0).getDay();
+
+    for (let i = 0; i < lastWeekDaysPadding; i++) {
+      blocks.push(
+        <td className={"calendar-padding-block"} key={"padding-id-" + i}>
+          {i + 1}
+        </td>
+      );
+    }
     return blocks;
   };
 
@@ -153,48 +161,51 @@ class CalendarComponent extends Component<PropRules, StateRules> {
     const dates: DateRangeInfo = this.getDateRange(month, year);
     const padding: number = dates.padding;
 
-    const prevMonthPaddingBlocks: JSX.Element[] = this.getPaddingDataBlocks(
+    const prevMonthPaddingBlocks: JSX.Element[] = this.getPaddingPrefixBlocks(
       padding
     );
-    const nextMonthpaddingBlocks: JSX.Element[] = this.getPaddingDataBlocks(
-      padding,
-      true
-    );
+    const nextMonthpaddingBlocks: JSX.Element[] = this.getPaddingSuffixBlocks();
+
     const dateBlocks: JSX.Element[] = this.getDateDataBlocks(dates.days);
 
+    // merge all the <td></td> blocks, including dates of this month and padding dates of the neighbouring months
     let blocks: JSX.Element[] = [
       ...prevMonthPaddingBlocks,
       ...dateBlocks,
       ...nextMonthpaddingBlocks,
     ];
 
-    const rows: JSX.Element[] = [];
-    let row: JSX.Element[] = [];
+    const allRows: JSX.Element[] = [];
+    let singleRow: JSX.Element[] = [];
 
+    // Loop through all <td>-blocks and place them into rows. Push the rows to allRows container once every 7 blocks
+    // have been looped through.
     for (let i = 0; i <= blocks.length; i++) {
       if (i % 7 === 0) {
-        rows.push(<tr key={"month-row-id-" + i}>{row}</tr>);
-        row = [];
+        allRows.push(<tr key={"month-row-id-" + i}>{singleRow}</tr>);
+        singleRow = [];
       }
-      row.push(blocks[i]);
+
+      singleRow.push(blocks[i]);
+
       if (i > blocks.length - 1)
-        rows.push(<tr key={"month-row-id-last"}>{row}</tr>);
+        allRows.push(<tr key={"month-row-id-last"}>{singleRow}</tr>);
     }
 
-    row = [];
-    console.log("TEST", rows);
-    if (rows.length < 8) {
+    if (allRows.length < 8) {
       const nextPaddingDate = nextMonthpaddingBlocks.length + 1;
       const blocks: JSX.Element[] = [];
 
       for (let i = 0; i < 7; i++) {
-        blocks[i] = <td>{nextPaddingDate + i}</td>;
+        blocks[i] = (
+          <td className="calendar-padding-block">{nextPaddingDate + i}</td>
+        );
       }
 
-      rows.push(<tr key={"month-row-id-extrapadding"}>{blocks}</tr>);
+      allRows.push(<tr key={"month-row-id-extrapadding"}>{blocks}</tr>);
     }
 
-    return <tbody>{rows}</tbody>;
+    return <tbody>{allRows}</tbody>;
   };
 
   private renderTableHeader: () => JSX.Element = () => {
