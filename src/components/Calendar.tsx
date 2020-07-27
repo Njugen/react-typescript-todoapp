@@ -34,6 +34,14 @@ class CalendarComponent extends Component<PropRules, StateRules> {
     selectedYear: 2020,
   };
 
+  private getSelectedMonth: () => number = () => {
+    return this.state.selectedMonth;
+  };
+
+  private getSelectedYear: () => number = () => {
+    return this.state.selectedYear;
+  };
+
   // Get an array of all years from startYear uptil and including endYear
   private getYearRange: (startYear: number, endYear: number) => number[] = (
     startYear,
@@ -144,6 +152,16 @@ class CalendarComponent extends Component<PropRules, StateRules> {
     return blocks;
   };
 
+  private getPaddingRow: (startDate: number) => JSX.Element = (startDate) => {
+    const blocks: JSX.Element[] = [];
+
+    for (let i = 0; i < 7; i++) {
+      blocks[i] = <td className="calendar-padding-block">{startDate + i}</td>;
+    }
+
+    return <tr key={"month-row-id-extrapadding"}>{blocks}</tr>;
+  };
+
   private getDateDataBlocks: (days: number) => JSX.Element[] = (days) => {
     const blocks: JSX.Element[] = [];
 
@@ -193,16 +211,8 @@ class CalendarComponent extends Component<PropRules, StateRules> {
     }
 
     if (allRows.length < 8) {
-      const nextPaddingDate = nextMonthpaddingBlocks.length + 1;
-      const blocks: JSX.Element[] = [];
-
-      for (let i = 0; i < 7; i++) {
-        blocks[i] = (
-          <td className="calendar-padding-block">{nextPaddingDate + i}</td>
-        );
-      }
-
-      allRows.push(<tr key={"month-row-id-extrapadding"}>{blocks}</tr>);
+      const paddingRow = this.getPaddingRow(nextMonthpaddingBlocks.length + 1);
+      allRows.push(paddingRow);
     }
 
     return <tbody>{allRows}</tbody>;

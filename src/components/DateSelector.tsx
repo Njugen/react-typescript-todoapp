@@ -15,13 +15,7 @@ class DateSelectorComponent extends Component<PropRules, StateRules> {
     const thisComponent = this.componentContainerRef.current as HTMLElement;
 
     // If I click outside the area of this component, the calendar should be hidden.
-    // Check this by verifying wether this date component is included in the clicked component and vice versa.
-    // Also, only perform the check if clickedElement actually is an element and .contains method exists.
-
-    if (
-      (clickedElement.contains && clickedElement.contains(thisComponent)) ||
-      !thisComponent.contains(clickedElement)
-    ) {
+    if (thisComponent && !thisComponent.contains(clickedElement)) {
       this.toggleCalendarVisibility(false);
 
       // Remove the event listener. We don't want it to be active when not needed.
