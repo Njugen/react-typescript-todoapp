@@ -1,14 +1,42 @@
 import React, { Component } from "react";
 import "./../css/AddTodo.css";
 import SingleLineFormComponent from "./SingleLineForm";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { addNote } from "./../actions/notes/add";
+import SelectedDateReducer from "./../reducers/SelectedDate";
+import NotesReducer from "./../reducers/Notes";
+
+type ActionType = {
+  type: string;
+  payload: object;
+};
+
+type Note = {
+  id: number;
+  text: string;
+  cleared?: boolean;
+};
+
+type Notes = {
+  [key: number]: Note[];
+};
 
 interface StateRules {}
 
-interface PropRules {}
+interface PropRules {
+  selectedDateReducer: string;
+  notesReducer: Notes;
+  addNote: (dateKey: string, text: string) => ActionType;
+}
 
 class AddTodoComponent extends Component<PropRules, StateRules> {
-  handleButtonClick: (event: React.FormEvent) => void = (event) => {
+  handleLineFormRaise: (event: React.FormEvent, inputValue: string) => void = (
+    event,
+    inputValue
+  ) => {
     event.preventDefault();
+    this.props.addNote("27081991", inputValue);
   };
 
   render = () => {
@@ -17,7 +45,9 @@ class AddTodoComponent extends Component<PropRules, StateRules> {
         <SingleLineFormComponent
           value=""
           placeholder="Add Todo..."
-          onButtonClick={this.handleButtonClick}
+          onButtonClick={(event, value) =>
+            this.handleLineFormRaise(event, value)
+          }
           buttonText="ADD"
         />
       </div>
@@ -25,4 +55,22 @@ class AddTodoComponent extends Component<PropRules, StateRules> {
   };
 }
 
-export default AddTodoComponent;
+const mapStateToProps = (state: any) => {
+  console.log("ÄÄÄ", state);
+  return {
+    selectedDateReducer: state.SelectedDateReducer,
+    notesReducer: state.NotesReducer,
+  };
+};
+
+const mapDispatchToProps = (dispatch: any) => {
+  console.log("DDDD");
+  return {
+    addNote: (dateKey: string, text: string) => {
+      return dispatch(addNote(dateKey, text));
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddTodoComponent);
+//export default AddTodoComponent;

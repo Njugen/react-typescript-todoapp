@@ -10,7 +10,7 @@ interface PropRules {
   placeholder?: string;
   buttonText?: string;
   buttonIconReference?: string;
-  onButtonClick: (event: React.FormEvent) => void;
+  onButtonClick: (event: React.FormEvent, inputValue: string) => void;
 }
 
 class SingleLineFormComponent extends Component<PropRules, StateRules> {
@@ -46,7 +46,7 @@ class SingleLineFormComponent extends Component<PropRules, StateRules> {
           className={
             buttonIconReference + " singleline-form-submit-button col-1"
           }
-          onClick={onButtonClickRaise}
+          onClick={(e) => onButtonClickRaise(e, inputValue)}
         >
           {buttonText || ""}
         </button>

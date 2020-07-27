@@ -38,7 +38,7 @@ class DateSelectorComponent extends Component<PropRules, StateRules> {
     }
   };
 
-  handleButtonClick: (event: React.FormEvent) => void = (event) => {
+  handleLineFormRaise: (event: React.FormEvent) => void = (event) => {
     event.preventDefault();
     this.toggleCalendarVisibility(true);
   };
@@ -57,7 +57,7 @@ class DateSelectorComponent extends Component<PropRules, StateRules> {
       <div ref={this.componentContainerRef} className="date-selector-container">
         <SingleLineFormComponent
           value=""
-          onButtonClick={this.handleButtonClick}
+          onButtonClick={this.handleLineFormRaise}
           buttonIconReference="fas fa-calendar-day"
         />
         <div className="row">

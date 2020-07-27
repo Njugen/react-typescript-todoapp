@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import "./../css/NoteList.css";
 import IconComponent from "./Icon";
-
+import { connect } from "react-redux";
+import { deleteNote } from "../actions/notes/delete";
 interface StateRules {}
 
 interface PropRules {
@@ -9,7 +10,7 @@ interface PropRules {
   text: string;
   cleared?: boolean;
   onDeleteItem: (itemId: number) => void;
-  onMarkAsCleared: (itemId: number) => void;
+  onMarkAsCleared: (itemId: number, cleared: boolean) => void;
 }
 
 type StatusProperties = {
@@ -31,6 +32,7 @@ class NoteListItemComponent extends Component<PropRules, StateRules> {
     const {
       text,
       id,
+      cleared,
       onDeleteItem: onDeleteItemRaise,
       onMarkAsCleared: onMarkAsClearedRaise,
     } = this.props;
@@ -47,7 +49,7 @@ class NoteListItemComponent extends Component<PropRules, StateRules> {
             iconReference={status.iconReference}
             size={15}
             color={status.color}
-            onClick={() => onMarkAsClearedRaise(id)}
+            onClick={() => onMarkAsClearedRaise(id, cleared || false)}
             className="note-item-manage-icon"
           />
           <IconComponent
