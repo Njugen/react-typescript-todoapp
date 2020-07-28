@@ -2,12 +2,26 @@ import React, { Component, createRef } from "react";
 import SingleLineFormComponent from "./SingleLineForm";
 import CalendarComponent from "./Calendar";
 import "./../css/DateSelector.css";
+import { connect } from "react-redux";
+import SelectedDateReducer from "./../reducers/SelectedDate";
 
-interface StateRules {}
+type ActionType = {
+  type: string;
+  payload: object;
+};
 
-interface PropRules {}
+interface StateRules {
+  showCalendar: boolean;
+}
+
+interface PropRules {
+  selectedDateReducer: any;
+}
 
 class DateSelectorComponent extends Component<PropRules, StateRules> {
+  state = {
+    showCalendar: false,
+  };
   listenForExternalClicks: (event: MouseEvent) => void = (event) => {
     // The target may, or may not be an element. Here, I inform TypeScript that
     // I regard this as an HTMLElement during all circumstances.
@@ -24,23 +38,17 @@ class DateSelectorComponent extends Component<PropRules, StateRules> {
   };
 
   toggleCalendarVisibility = (visible: boolean) => {
-    const calendarElement: HTMLDivElement | null = this.calendarRef.current;
-
-    if (calendarElement) {
-      if (visible === false) {
-        calendarElement.style.display = "none";
-      } else {
-        calendarElement.style.display = "block";
-
-        // Enable an event listener, listening for external clicks.
+    this.setState({ showCalendar: visible }, () => {
+      if (this.state.showCalendar === true) {
         window.addEventListener("click", this.listenForExternalClicks);
       }
-    }
+    });
   };
 
   handleLineFormRaise: (event: React.FormEvent) => void = (event) => {
     event.preventDefault();
-    this.toggleCalendarVisibility(true);
+    const { showCalendar } = this.state;
+    this.toggleCalendarVisibility(showCalendar ? false : true);
   };
 
   componentContainerRef: React.RefObject<HTMLDivElement>;
@@ -52,23 +60,50 @@ class DateSelectorComponent extends Component<PropRules, StateRules> {
     this.calendarRef = createRef();
   }
 
+  componentDidMount = () => {};
+
   render = () => {
+    const { day, month, year } = this.props.selectedDateReducer;
+    console.log("VIII", this.props.selectedDateReducer);
     return (
       <div ref={this.componentContainerRef} className="date-selector-container">
         <SingleLineFormComponent
-          value=""
+          value={year + "-" + month + "-" + day}
           onButtonClick={this.handleLineFormRaise}
           buttonIconReference="fas fa-calendar-day"
+          key={this.props.selectedDateReducer.day}
         />
-        <div className="row">
-          <CalendarComponent
-            id="date-selector-calendar"
-            refer={this.calendarRef}
-          />
-        </div>
+        {this.state.showCalendar && (
+          <div className="row">
+            <CalendarComponent
+              id="date-selector-calendar"
+              refer={this.calendarRef}
+              preset={[parseInt(day), parseInt(month) - 1, parseInt(year)]}
+              onDateClick={() => this.toggleCalendarVisibility(false)}
+            />
+          </div>
+        )}
       </div>
     );
   };
 }
 
-export default DateSelectorComponent;
+const mapStateToProps = (state: any) => {
+  return {
+    selectedDateReducer: state.SelectedDateReducer,
+    notesReducer: state.NotesReducer,
+  };
+};
+
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    setCalendarVisibility: (isVisible: boolean) => {
+      return dispatch();
+    },
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(DateSelectorComponent);

@@ -25,7 +25,11 @@ type Notes = {
 interface StateRules {}
 
 interface PropRules {
-  selectedDateReducer: string;
+  selectedDateReducer: {
+    day: string;
+    month: string;
+    year: string;
+  };
   notesReducer: Notes;
   addNote: (dateKey: string, text: string) => ActionType;
 }
@@ -36,7 +40,11 @@ class AddTodoComponent extends Component<PropRules, StateRules> {
     inputValue
   ) => {
     event.preventDefault();
-    this.props.addNote("27081991", inputValue);
+
+    const { day, month, year } = this.props.selectedDateReducer;
+    const dataKey: string = day + "" + month + "" + year;
+
+    this.props.addNote(dataKey, inputValue);
   };
 
   render = () => {

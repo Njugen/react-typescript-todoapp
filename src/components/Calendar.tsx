@@ -1,15 +1,30 @@
 import React, { Component } from "react";
 import "./../css/Calendar.css";
 import IconComponent from "./Icon";
+import { connect } from "react-redux";
+import { setDay, setMonth, setYear } from "./../actions/dates/set";
+import { getDate } from "./../actions/dates/get";
+
+type ActionType = {
+  type: string;
+  payload: object;
+};
 
 interface StateRules {
-  selectedMonth: number;
-  selectedYear: number;
+  localMonth: number;
+  localYear: number;
 }
 
 interface PropRules {
   id: string;
   refer: React.RefObject<HTMLDivElement>;
+  onDateClick: () => void;
+  setDay: (day: number) => ActionType;
+  setMonth: (month: number) => ActionType;
+  setYear: (year: number) => ActionType;
+  getDate: () => ActionType;
+  selectedDateReducer: { day: string; month: string; year: string };
+  preset: [number, number, number];
 }
 
 type DateRangeInfo = {
@@ -30,16 +45,18 @@ type TodayInfo = {
 
 class CalendarComponent extends Component<PropRules, StateRules> {
   state = {
-    selectedMonth: 6,
-    selectedYear: 2020,
+    localMonth: this.props.preset[1],
+    localYear: this.props.preset[2],
   };
 
   private getSelectedMonth: () => number = () => {
-    return this.state.selectedMonth;
+    //return parseInt(this.props.selectedDateReducer.month) - 1;
+    return this.state.localMonth;
   };
 
   private getSelectedYear: () => number = () => {
-    return this.state.selectedYear;
+    //return parseInt(this.props.selectedDateReducer.year);
+    return this.state.localYear;
   };
 
   // Get an array of all years from startYear uptil and including endYear
@@ -108,7 +125,10 @@ class CalendarComponent extends Component<PropRules, StateRules> {
   private getPaddingPrefixBlocks: (padding: number) => JSX.Element[] = (
     padding
   ) => {
-    const { selectedMonth, selectedYear } = this.state;
+    //const { selectedMonth, selectedYear } = this.state;
+    const selectedMonth: number = this.getSelectedMonth();
+    const selectedYear: number = this.getSelectedYear();
+
     const blocks: JSX.Element[] = [];
 
     // The week starts on Sunday. If there is no weekday padding based on the date, then add a full
@@ -135,7 +155,10 @@ class CalendarComponent extends Component<PropRules, StateRules> {
   };
 
   private getPaddingSuffixBlocks: () => JSX.Element[] = () => {
-    const { selectedMonth, selectedYear } = this.state;
+    //const { selectedMonth, selectedYear } = this.state;
+    const selectedMonth: number = this.getSelectedMonth();
+    const selectedYear: number = this.getSelectedYear();
+
     const blocks: JSX.Element[] = [];
 
     //Push the first few days of the next month, by
@@ -161,12 +184,29 @@ class CalendarComponent extends Component<PropRules, StateRules> {
 
     return <tr key={"month-row-id-extrapadding"}>{blocks}</tr>;
   };
-
+  private setSelectedDate: (dateNumber: number) => void = (dateNumber) => {
+    this.props.setDay(dateNumber);
+    this.props.setMonth(this.state.localMonth);
+    this.props.setYear(this.state.localYear);
+  };
   private getDateDataBlocks: (days: number) => JSX.Element[] = (days) => {
     const blocks: JSX.Element[] = [];
+    const { onDateClick: onDateClickRaise } = this.props;
 
     for (let i = 0; i < days; i++) {
-      blocks.push(<td key={"date-id-" + i}>{i + 1}</td>);
+      const dateNumber: number = i + 1;
+      blocks.push(
+        <td
+          key={"date-id-" + i}
+          className="calendar-date-block"
+          onClick={() => {
+            this.setSelectedDate(dateNumber);
+            onDateClickRaise();
+          }}
+        >
+          {dateNumber}
+        </td>
+      );
     }
 
     return blocks;
@@ -239,7 +279,9 @@ class CalendarComponent extends Component<PropRules, StateRules> {
     handleChange: (input: React.ChangeEvent<HTMLSelectElement>) => void
   ) => JSX.Element = (startYear, endYear, handleChange) => {
     const years: number[] = this.getYearRange(startYear, endYear);
-    const { selectedYear } = this.state;
+
+    //const { selectedYear } = this.state;
+    const selectedYear: number = this.getSelectedYear();
 
     const optionElements: JSX.Element[] = years.map((year, index) => (
       <option
@@ -262,7 +304,9 @@ class CalendarComponent extends Component<PropRules, StateRules> {
     handleChange: (input: React.ChangeEvent<HTMLSelectElement>) => void
   ) => JSX.Element = (handleChange) => {
     const months: MonthInfo[] = this.getMonthRange();
-    const { selectedMonth } = this.state;
+    //const { selectedMonth } = this.state;
+    const selectedMonth: number = this.getSelectedMonth();
+
     console.log("MONTH", selectedMonth);
     const optionElements: JSX.Element[] = months.map((month, index) => (
       <option
@@ -301,7 +345,10 @@ class CalendarComponent extends Component<PropRules, StateRules> {
 
   setMonthState: (value: number) => void = (value) => {
     let adjustedValue: number = value;
-    const { selectedYear } = this.state;
+    //  this.props.setMonth(value);
+    console.log("CYRRE", this.props.selectedDateReducer);
+    //const { selectedYear } = this.state;
+    const selectedYear: number = this.getSelectedYear();
 
     if (value < 0) {
       adjustedValue = 11;
@@ -312,16 +359,22 @@ class CalendarComponent extends Component<PropRules, StateRules> {
       this.setYearState(selectedYear + 1);
     }
 
-    this.setState({ selectedMonth: adjustedValue });
+    this.setState({ localMonth: adjustedValue });
+    //this.props.setMonth(adjustedValue);
   };
 
   setYearState: (value: number) => void = (value) => {
-    this.setState({ selectedYear: value });
+    //this.props.setYear(value);
+    this.setState({ localYear: value });
   };
 
   render = () => {
     const { id, refer } = this.props;
-    const { selectedMonth, selectedYear } = this.state;
+    //const { selectedMonth, selectedYear } = this.state;
+    //const selectedMonth: number = this.getSelectedMonth();
+    //const selectedYear: number = this.getSelectedYear();
+    const selectedMonth: number = this.state.localMonth;
+    const selectedYear: number = this.state.localYear;
 
     return (
       <div id={id} ref={refer} className="calendar-container">
@@ -348,4 +401,29 @@ class CalendarComponent extends Component<PropRules, StateRules> {
   };
 }
 
-export default CalendarComponent;
+const mapStateToProps = (state: any) => {
+  console.log("HNN", state);
+  return {
+    selectedDateReducer: state.SelectedDateReducer,
+    notesReducer: state.NotesReducer,
+  };
+};
+
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    setDay: (day: number) => {
+      return dispatch(setDay(day));
+    },
+    setMonth: (month: number) => {
+      return dispatch(setMonth(month));
+    },
+    setYear: (year: number) => {
+      return dispatch(setYear(year));
+    },
+    getDate: () => {
+      return dispatch(getDate());
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(CalendarComponent);

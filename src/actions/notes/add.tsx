@@ -15,7 +15,7 @@ export const addNote: (
   cleared?: boolean
 ) => ActionType = (dateKey, text, cleared) => {
   return {
-    type: "ADD",
+    type: "ADD_NOTE",
     payload: {
       dateKey,
       text,

@@ -15,7 +15,7 @@ export const clearNote: (
   cleared: boolean
 ) => ActionType = (dateKey, id, cleared) => {
   return {
-    type: "CLEAR",
+    type: "CLEAR_NOTE",
     payload: {
       dateKey,
       id,

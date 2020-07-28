@@ -14,7 +14,7 @@ export const deleteNote: (dateKey: string, id: number) => ActionType = (
   id
 ) => {
   return {
-    type: "DELETE",
+    type: "DELETE_NOTE",
     payload: {
       dateKey,
       id,

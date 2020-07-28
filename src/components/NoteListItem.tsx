@@ -9,8 +9,8 @@ interface PropRules {
   id: number;
   text: string;
   cleared?: boolean;
-  onDeleteItem: (itemId: number) => void;
-  onMarkAsCleared: (itemId: number, cleared: boolean) => void;
+  onDeleteItem?: (itemId: number) => void;
+  onMarkAsCleared?: (itemId: number, cleared: boolean) => void;
 }
 
 type StatusProperties = {
@@ -45,20 +45,24 @@ class NoteListItemComponent extends Component<PropRules, StateRules> {
           <span>{text}</span>
         </div>
         <div className="note-list-item-manage">
-          <IconComponent
-            iconReference={status.iconReference}
-            size={15}
-            color={status.color}
-            onClick={() => onMarkAsClearedRaise(id, cleared || false)}
-            className="note-item-manage-icon"
-          />
-          <IconComponent
-            iconReference="fas fa-trash"
-            size={15}
-            color="#dd0031"
-            onClick={() => onDeleteItemRaise(id)}
-            className="note-item-manage-icon"
-          />
+          {onMarkAsClearedRaise && (
+            <IconComponent
+              iconReference={status.iconReference}
+              size={15}
+              color={status.color}
+              onClick={() => onMarkAsClearedRaise(id, cleared || false)}
+              className="note-item-manage-icon"
+            />
+          )}
+          {onDeleteItemRaise && (
+            <IconComponent
+              iconReference="fas fa-trash"
+              size={15}
+              color="#dd0031"
+              onClick={() => onDeleteItemRaise(id)}
+              className="note-item-manage-icon"
+            />
+          )}
         </div>
       </div>
     );

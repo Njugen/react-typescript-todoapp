@@ -1,6 +1,10 @@
 type ActionType = {
   type: string;
-  payload: object;
+  payload: {
+    day: number;
+    month: number;
+    year: number;
+  };
 };
 
 type Note = {
@@ -13,13 +17,61 @@ type Notes = {
   [key: number]: Note[];
 };
 
-const SelectedDateReducer: (state: string, action: ActionType) => void = (
-  state = "",
+type CalendarDate = {
+  day: string;
+  month: string;
+  year: string;
+};
+
+const convertToDoubleDigitString: (number: number) => string = (number) => {
+  let output;
+
+  if (number < 10) {
+    output = "0" + number.toString();
+  } else {
+    output = number.toString();
+  }
+
+  return output;
+};
+
+const getToday: () => CalendarDate = () => {
+  const date: Date = new Date();
+
+  const dayDoubleDigit: string = convertToDoubleDigitString(date.getDate());
+  const monthDoubleDigit: string = convertToDoubleDigitString(
+    date.getMonth() + 1
+  );
+
+  return {
+    day: dayDoubleDigit,
+    month: monthDoubleDigit,
+    year: date.getFullYear().toString(),
+  };
+};
+
+const SelectedDateReducer: (state: CalendarDate, action: ActionType) => void = (
+  state = getToday(),
   action
 ) => {
-  switch (action.type) {
-    case "CHANGE":
-      return action.payload;
+  const { type } = action;
+  switch (type) {
+    case "SET_DAY":
+      state["day"] = convertToDoubleDigitString(action.payload.day);
+      console.log("CLI", state["day"]);
+      return {
+        ...state,
+      };
+    case "SET_MONTH":
+      state["month"] = convertToDoubleDigitString(action.payload.month);
+
+      return { ...state };
+    case "SET_YEAR":
+      state["year"] = action.payload.year.toString();
+
+      return { ...state };
+    case "GET_DATE":
+      return state;
     default:
       return state;
   }

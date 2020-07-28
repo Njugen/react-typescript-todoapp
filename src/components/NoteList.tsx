@@ -14,6 +14,11 @@ interface PropRules {
   deleteNote: (dateKey: string, id: number) => void;
   clearNote: (dateKey: string, id: number, cleared: boolean) => void;
   notesReducer: any;
+  selectedDateReducer: {
+    day: string;
+    month: string;
+    year: string;
+  };
 }
 
 type ActionType = {
@@ -38,14 +43,20 @@ type Notes = {
 
 class NoteListComponent extends Component<PropRules, StateRules> {
   handleDeleteItem: (itemId: number) => void = (itemId) => {
-    this.props.deleteNote("27081991", itemId);
+    const { day, month, year } = this.props.selectedDateReducer;
+    const dataKey: string = day + "" + month + "" + year;
+
+    this.props.deleteNote(dataKey, itemId);
   };
 
   handleMarkAsCleared: (itemId: number, clear: boolean) => void = (
     itemId,
     clear
   ) => {
-    this.props.clearNote("27081991", itemId, !clear ? true : false);
+    const { day, month, year } = this.props.selectedDateReducer;
+    const dataKey: string = day + "" + month + "" + year;
+
+    this.props.clearNote(dataKey, itemId, !clear ? true : false);
   };
 
   getAllNotes: (dateKey: string) => Note[] = (dateKey) => {
@@ -61,20 +72,31 @@ class NoteListComponent extends Component<PropRules, StateRules> {
   };
 
   render = () => {
-    const notes: Note[] = this.getAllNotes("27081991");
+    const { day, month, year } = this.props.selectedDateReducer;
+    const dataKey: string = day + "" + month + "" + year;
+
+    const notes: Note[] = this.getAllNotes(dataKey);
     console.log("XI");
+
     return (
       <div className="note-list-container container">
-        {notes.map((note, index) => (
+        {Array.isArray(notes) && notes.length > 0 ? (
+          notes.map((note, index) => (
+            <NoteListItemComponent
+              id={note.id}
+              text={note.text}
+              cleared={note.cleared}
+              onDeleteItem={this.handleDeleteItem}
+              onMarkAsCleared={this.handleMarkAsCleared}
+              key={"noteId-" + index}
+            />
+          ))
+        ) : (
           <NoteListItemComponent
-            id={note.id}
-            text={note.text}
-            cleared={note.cleared}
-            onDeleteItem={this.handleDeleteItem}
-            onMarkAsCleared={this.handleMarkAsCleared}
-            key={"noteId-" + index}
+            id={0}
+            text="There are currently no notes assigned to this date"
           />
-        ))}
+        )}
       </div>
     );
   };

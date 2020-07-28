@@ -9,11 +9,9 @@ type Note = {
   cleared?: boolean;
 };
 
-export const getAllNotes: (dateKey: string) => ActionType = (dateKey) => {
+export const getDate: () => ActionType = () => {
   return {
-    type: "GET_NOTE",
-    payload: {
-      dateKey,
-    },
+    type: "GET_DATE",
+    payload: {},
   };
 };

@@ -19,27 +19,13 @@ type Notes = {
 };
 
 const NotesReducer: (state: Notes, action: ActionType) => void = (
-  /*
-        {
-            [date-string]: []
-        }
-    */
-  state = {
-    "27081991": [
-      { id: 0, text: "blablabla" },
-      { id: 1, text: "blablabla" },
-    ],
-    "27081992": [
-      { id: 0, text: "blablabla" },
-      { id: 1, text: "blablabla" },
-    ],
-  },
+  state = { "": [] },
   action
 ) => {
   const { type } = action;
 
   switch (type) {
-    case "ADD":
+    case "ADD_NOTE":
       console.log("PAYLOAD", state);
       const { payload } = action;
       const { dateKey, text, cleared, id } = payload;
@@ -63,7 +49,7 @@ const NotesReducer: (state: Notes, action: ActionType) => void = (
       });
 
       return { ...state };
-    case "DELETE":
+    case "DELETE_NOTE":
       const { payload: payload2 } = action;
       const { dateKey: dateKey2, id: id2 } = payload2;
 
@@ -72,9 +58,9 @@ const NotesReducer: (state: Notes, action: ActionType) => void = (
       );
 
       return { ...state };
-    case "GET":
+    case "GET_NOTE":
       return state;
-    case "CLEAR":
+    case "CLEAR_NOTE":
       const { payload: payload3 } = action;
       const { dateKey: dateKey3, id: id3 } = payload3;
 
