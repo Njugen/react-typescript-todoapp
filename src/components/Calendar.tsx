@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "./../css/Calendar.css";
 import IconComponent from "./Icon";
 import { connect } from "react-redux";
-import { setDay, setMonth, setYear } from "./../actions/dates/set";
+import { setDate } from "./../actions/dates/set";
 import {
   DateRangeInfo,
   MonthInfo,
@@ -17,9 +17,7 @@ interface StateRules {
 interface PropRules {
   id: string;
   onDateClick: () => void;
-  setDay: (day: number) => SelectedDateAction;
-  setMonth: (month: number) => SelectedDateAction;
-  setYear: (year: number) => SelectedDateAction;
+  setDate: (day: number, month: number, year: number) => SelectedDateAction;
   selectedDateReducer: { day: string; month: string; year: string };
   preset: [number, number, number];
 }
@@ -258,7 +256,7 @@ class CalendarComponent extends Component<PropRules, StateRules> {
     yearOffset?: number
   ) => void = (dateNumber, monthOffset = 0, yearOffset = 0) => {
     const { localMonth, localYear } = this.state;
-    const { setDay, setMonth, setYear } = this.props;
+    const { setDate } = this.props;
 
     const newMonthValue: number = localMonth + monthOffset; // month taken from state + function offset argument
     let forcedMonthValue: number; // specific month to be enforced by this function
@@ -279,9 +277,7 @@ class CalendarComponent extends Component<PropRules, StateRules> {
       newYearValue >= this.calendarYearRangeStart &&
       newYearValue <= this.calendarYearRangeEnd
     ) {
-      setDay(dateNumber);
-      setMonth(forcedMonthValue);
-      setYear(newYearValue);
+      setDate(dateNumber, forcedMonthValue, newYearValue);
     }
   };
 
@@ -501,16 +497,9 @@ const mapStateToProps = (state: any) => {
 
 const mapDispatchToProps = (dispatch: any) => {
   return {
-    setDay: (day: number) => {
-      return dispatch(setDay(day));
-    },
-    setMonth: (month: number) => {
-      return dispatch(setMonth(month));
-    },
-    setYear: (year: number) => {
-      return dispatch(setYear(year));
+    setDate: (day: number, month: number, year: number) => {
+      return dispatch(setDate(day, month, year));
     },
   };
 };
-
 export default connect(mapStateToProps, mapDispatchToProps)(CalendarComponent);

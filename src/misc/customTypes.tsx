@@ -52,9 +52,9 @@ export type MonthInfo = {
 export type SelectedDateAction = {
   type: string;
   payload: {
-    day?: number;
-    month?: number;
-    year?: number;
+    day: number;
+    month: number;
+    year: number;
   };
 };
 
