@@ -255,20 +255,22 @@ class CalendarComponent extends Component<PropRules, StateRules> {
     yearOffset?: number
   ) => void = (dateNumber, monthOffset = 0, yearOffset = 0) => {
     const { localMonth, localYear } = this.state;
-    this.props.setDay(dateNumber);
+    const { setDay, setMonth, setYear } = this.props;
+
+    setDay(dateNumber);
 
     const newMonthValue = localMonth + monthOffset;
 
     if (newMonthValue >= 12) {
-      this.props.setMonth(0);
+      setMonth(0);
       yearOffset = 1;
     } else if (newMonthValue < 0) {
-      this.props.setMonth(11);
+      setMonth(11);
       yearOffset = -1;
     } else {
-      this.props.setMonth(newMonthValue);
+      setMonth(newMonthValue);
     }
-    this.props.setYear(localYear + yearOffset);
+    setYear(localYear + yearOffset);
   };
 
   private renderDays: (month: number, year: number) => JSX.Element = (
