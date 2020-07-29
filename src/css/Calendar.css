@@ -32,7 +32,8 @@
   margin: 0px 1rem;
 }
 
-.calendar-nav-arrow:hover {
+.calendar-nav-arrow:hover,
+.calendar-padding-block:hover {
   cursor: pointer;
 }
 
