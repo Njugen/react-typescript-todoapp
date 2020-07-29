@@ -130,6 +130,7 @@ class CalendarComponent extends Component<PropRules, StateRules> {
     const localYear: number = this.getLocalYear();
 
     const blocks: JSX.Element[] = [];
+    const { onDateClick: onDateClickRaise } = this.props;
 
     // The week starts on Sunday. If there is no weekday padding based on the date, then add a full
     // padding to ensure the first month date starts on sunday.
@@ -144,7 +145,14 @@ class CalendarComponent extends Component<PropRules, StateRules> {
 
     for (let i = 0; i < padding - 1; i++) {
       blocks.push(
-        <td className={"calendar-padding-block"} key={"padding-id-" + i}>
+        <td
+          className={"calendar-padding-block"}
+          key={"padding-id-" + i}
+          onClick={() => {
+            this.setSelectedDate(numberOfDaysPrevMonth - i, -1);
+            onDateClickRaise();
+          }}
+        >
           {numberOfDaysPrevMonth - i}
         </td>
       );
@@ -164,14 +172,21 @@ class CalendarComponent extends Component<PropRules, StateRules> {
     const localYear: number = this.getLocalYear();
 
     const blocks: JSX.Element[] = [];
-
+    const { onDateClick: onDateClickRaise } = this.props;
     //Push the first few days of the next month, by
     let lastWeekDaysPadding =
       7 - new Date(localYear, localMonth + 1, 0).getDay();
 
     for (let i = 0; i < lastWeekDaysPadding; i++) {
       blocks.push(
-        <td className={"calendar-padding-block"} key={"padding-id-" + i}>
+        <td
+          className={"calendar-padding-block"}
+          key={"padding-id-" + i}
+          onClick={() => {
+            this.setSelectedDate(i + 1, 1);
+            onDateClickRaise();
+          }}
+        >
           {i + 1}
         </td>
       );
@@ -186,12 +201,17 @@ class CalendarComponent extends Component<PropRules, StateRules> {
   */
   private getPaddingRow: (startDate: number) => JSX.Element = (startDate) => {
     const blocks: JSX.Element[] = [];
+    const { onDateClick: onDateClickRaise } = this.props;
 
     for (let i = 0; i < 7; i++) {
       blocks[i] = (
         <td
           className="calendar-padding-block"
           key={"month-row-lastrow-block-id" + i}
+          onClick={() => {
+            this.setSelectedDate(startDate + i, 1);
+            onDateClickRaise();
+          }}
         >
           {startDate + i}
         </td>
@@ -229,10 +249,26 @@ class CalendarComponent extends Component<PropRules, StateRules> {
   };
 
   // Set the selected date and update the redux store
-  private setSelectedDate: (dateNumber: number) => void = (dateNumber) => {
+  private setSelectedDate: (
+    dateNumber: number,
+    monthOffset?: number,
+    yearOffset?: number
+  ) => void = (dateNumber, monthOffset = 0, yearOffset = 0) => {
+    const { localMonth, localYear } = this.state;
     this.props.setDay(dateNumber);
-    this.props.setMonth(this.state.localMonth);
-    this.props.setYear(this.state.localYear);
+
+    const newMonthValue = localMonth + monthOffset;
+
+    if (newMonthValue >= 12) {
+      this.props.setMonth(0);
+      yearOffset = 1;
+    } else if (newMonthValue < 0) {
+      this.props.setMonth(11);
+      yearOffset = -1;
+    } else {
+      this.props.setMonth(newMonthValue);
+    }
+    this.props.setYear(localYear + yearOffset);
   };
 
   private renderDays: (month: number, year: number) => JSX.Element = (
