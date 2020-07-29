@@ -34,23 +34,15 @@ const SelectedDateReducer: (
   const { type, payload } = action;
 
   switch (type) {
-    case "SET_DAY":
-      if (payload.day) {
+    case "SET_DATE":
+      if (payload.day && payload.month && payload.year) {
         state["day"] = convertToDoubleDigitString(payload.day);
-      }
-      return {
-        ...state,
-      };
-    case "SET_MONTH":
-      if (payload.month) {
         state["month"] = convertToDoubleDigitString(payload.month);
-      }
-      return { ...state };
-    case "SET_YEAR":
-      if (payload.year) {
         state["year"] = payload.year.toString();
+
+        return { ...state };
       }
-      return { ...state };
+      return state;
     default:
       return state;
   }
