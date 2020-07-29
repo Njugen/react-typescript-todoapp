@@ -1,19 +1,10 @@
-type ActionType = {
-  type: string;
-  payload: object;
-};
-
-type Note = {
-  id: number;
-  text: string;
-  cleared?: boolean;
-};
+import { NotesAction } from "./../../misc/customTypes";
 
 export const clearNote: (
   dateKey: string,
   id: number,
   cleared: boolean
-) => ActionType = (dateKey, id, cleared) => {
+) => NotesAction = (dateKey, id, cleared) => {
   return {
     type: "CLEAR_NOTE",
     payload: {

@@ -5,6 +5,7 @@ import { getAllNotes } from "./../actions/notes/get";
 import { connect } from "react-redux";
 import { deleteNote } from "../actions/notes/delete";
 import { clearNote } from "./../actions/notes/clear";
+import { Note } from "./../misc/customTypes";
 
 interface PropRules {
   getAllNotes: (dateKey: string) => void; // Get all notes of a certain date from redux store by dateKey
@@ -19,12 +20,6 @@ interface PropRules {
     year: string; // The number of year (4 digits) where the selected day and selected month are listed under. Provided as string.
   };
 }
-
-type Note = {
-  id: number;
-  text: string;
-  cleared?: boolean;
-};
 
 class NoteListComponent extends Component<PropRules, {}> {
   // A handler used to delete a targetted note by its id. The id is raised from the targetted <NoteListItem> component

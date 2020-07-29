@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "./../css/Icon.css";
 import "../../node_modules/@fortawesome/fontawesome-free/css/all.min.css";
+import { DynamicIconStyle } from "./../misc/customTypes";
 
 interface PropRules {
   // The CSS class needed in order for an icon image to show up (fontawesome icons)
@@ -22,13 +23,6 @@ interface PropRules {
   // Triggers when this component is clicked, and provides mouse event to the function triggered
   onClick?: (event: React.MouseEvent) => void;
 }
-
-// A layout type representing the style of the icon itself
-type DynamicIconStyle = {
-  fontSize: string;
-  color: string;
-  cursor?: string;
-};
 
 class IconComponent extends Component<PropRules, {}> {
   // If the input string has any empty spaces, remove them and return the new string. In handy for e.g. HTML id attributes

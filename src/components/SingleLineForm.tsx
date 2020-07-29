@@ -7,7 +7,11 @@ interface StateRules {
 
 interface PropRules {
   value: string; // value of the text input field, provided by the parent component
-  onButtonClick: (event: React.FormEvent, inputValue: string) => void; // Triggers when the user clicks the component's button. Raises the parameters to parent.
+  onButtonClick: (
+    event: React.FormEvent,
+    inputValue: string,
+    callback?: Function
+  ) => void; // Triggers when the user clicks the component's button. Raises the parameters to parent.
   placeholder?: string; // Default text to show the user if no value exists in the text input field (optional)
   buttonText?: string; // The text to show on the component's button. Use either this or buttonIconReference, but preferaböu not both. (optional)
   buttonIconReference?: string; // CSS-class representing a fontawesome icon. Change this to change the icon. (optional)
@@ -54,7 +58,11 @@ class SingleLineFormComponent extends Component<PropRules, StateRules> {
           className={
             buttonIconReference + " singleline-form-submit-button col-1"
           }
-          onClick={(e) => onButtonClickRaise(e, inputValue)}
+          onClick={(e) => {
+            onButtonClickRaise(e, inputValue, () => {
+              this.setState({ inputValue: "" });
+            });
+          }}
         >
           {buttonText || ""}
         </button>

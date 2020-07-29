@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "./../css/NoteList.css";
 import IconComponent from "./Icon";
+import { ClearLayoutProperties } from "./../misc/customTypes";
 
 interface PropRules {
   id: number; // An unique id number representing this note. Used to target the component when, removing it or marking it as cleared
@@ -9,12 +10,6 @@ interface PropRules {
   onDeleteItem?: (itemId: number) => void; // A function to be triggered when user clicks the trash icon. Raises the id number to parent component (optional)
   onMarkAsCleared?: (itemId: number, cleared: boolean) => void; // A function to be triggered when the user marks the note as cleared. Raises the id number and the clear state to parent (optional)
 }
-
-// Type containing various style information about the clear prop.
-type ClearLayoutProperties = {
-  color: string;
-  iconReference: string;
-};
 
 class NoteListItemComponent extends Component<PropRules, {}> {
   // Returning various style information provided by the clear prop. Just to avoid bloating the render function

@@ -1,24 +1,6 @@
-type ActionType = {
-  type: string;
-  payload: {
-    dateKey: string;
-    text?: string;
-    cleared?: boolean;
-    id?: number;
-  };
-};
+import { Note, Notes, NotesAction } from "./../misc/customTypes";
 
-type Note = {
-  id: number;
-  text: string;
-  cleared?: boolean;
-};
-
-type Notes = {
-  [key: string]: Note[];
-};
-
-const NotesReducer: (state: Notes, action: ActionType) => void = (
+const NotesReducer: (state: Notes, action: NotesAction) => void = (
   state = {},
   action
 ) => {

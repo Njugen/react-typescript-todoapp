@@ -1,23 +1,9 @@
-import React, { Component } from "react";
+import React, { Component, createRef } from "react";
 import "./../css/AddTodo.css";
 import SingleLineFormComponent from "./SingleLineForm";
 import { connect } from "react-redux";
 import { addNote } from "./../actions/notes/add";
-
-type ActionType = {
-  type: string;
-  payload: object;
-};
-
-type Note = {
-  id: number;
-  text: string;
-  cleared?: boolean;
-};
-
-type Notes = {
-  [key: number]: Note[];
-};
+import { NotesAction, Notes } from "./../misc/customTypes";
 
 interface PropRules {
   selectedDateReducer: {
@@ -26,16 +12,17 @@ interface PropRules {
     year: string;
   };
   notesReducer: Notes;
-  addNote: (dateKey: string, text: string) => ActionType;
+  addNote: (dateKey: string, text: string) => NotesAction;
 }
 
-class AddTodoComponent extends Component<PropRules, {}> {
+class AddTodoComponent extends Component<PropRules> {
   // Function meant to handle the event triggered by the button click in SingleLineFormComponent.
   // This adds the note to redux store
-  handleLineFormRaise: (event: React.FormEvent, inputValue: string) => void = (
-    event,
-    inputValue
-  ) => {
+  handleLineFormRaise: (
+    event: React.FormEvent,
+    inputValue: string,
+    callback?: Function
+  ) => void = (event, inputValue, callback) => {
     const { addNote } = this.props;
     event.preventDefault();
 
@@ -43,6 +30,10 @@ class AddTodoComponent extends Component<PropRules, {}> {
     const dataKey: string = day + "" + month + "" + year;
 
     addNote(dataKey, inputValue);
+
+    if (callback) {
+      callback();
+    }
   };
 
   render = () => {
@@ -51,9 +42,7 @@ class AddTodoComponent extends Component<PropRules, {}> {
         <SingleLineFormComponent
           value=""
           placeholder="Add Todo..."
-          onButtonClick={(event, value) =>
-            this.handleLineFormRaise(event, value)
-          }
+          onButtonClick={this.handleLineFormRaise}
           buttonText="ADD"
         />
       </div>

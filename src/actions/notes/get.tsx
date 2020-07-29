@@ -1,15 +1,6 @@
-type ActionType = {
-  type: string;
-  payload: object;
-};
+import { NotesAction } from "./../../misc/customTypes";
 
-type Note = {
-  id: number;
-  text: string;
-  cleared?: boolean;
-};
-
-export const getAllNotes: (dateKey: string) => ActionType = (dateKey) => {
+export const getAllNotes: (dateKey: string) => NotesAction = (dateKey) => {
   return {
     type: "GET_NOTE",
     payload: {

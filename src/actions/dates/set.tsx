@@ -1,15 +1,6 @@
-type ActionType = {
-  type: string;
-  payload: object;
-};
+import { SelectedDateAction } from "./../../misc/customTypes";
 
-type Note = {
-  id: number;
-  text: string;
-  cleared?: boolean;
-};
-
-export const setDay: (day: number) => ActionType = (day) => {
+export const setDay: (day: number) => SelectedDateAction = (day) => {
   return {
     type: "SET_DAY",
     payload: {
@@ -18,7 +9,7 @@ export const setDay: (day: number) => ActionType = (day) => {
   };
 };
 
-export const setMonth: (month: number) => ActionType = (month) => {
+export const setMonth: (month: number) => SelectedDateAction = (month) => {
   return {
     type: "SET_MONTH",
     payload: {
@@ -27,7 +18,7 @@ export const setMonth: (month: number) => ActionType = (month) => {
   };
 };
 
-export const setYear: (year: number) => ActionType = (year) => {
+export const setYear: (year: number) => SelectedDateAction = (year) => {
   return {
     type: "SET_YEAR",
     payload: {

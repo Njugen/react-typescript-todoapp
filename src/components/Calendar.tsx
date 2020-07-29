@@ -3,12 +3,11 @@ import "./../css/Calendar.css";
 import IconComponent from "./Icon";
 import { connect } from "react-redux";
 import { setDay, setMonth, setYear } from "./../actions/dates/set";
-import { getDate } from "./../actions/dates/get";
-
-type ActionType = {
-  type: string;
-  payload: object;
-};
+import {
+  DateRangeInfo,
+  MonthInfo,
+  SelectedDateAction,
+} from "./../misc/customTypes";
 
 interface StateRules {
   localMonth: number;
@@ -18,23 +17,12 @@ interface StateRules {
 interface PropRules {
   id: string;
   onDateClick: () => void;
-  setDay: (day: number) => ActionType;
-  setMonth: (month: number) => ActionType;
-  setYear: (year: number) => ActionType;
-  getDate: () => ActionType;
+  setDay: (day: number) => SelectedDateAction;
+  setMonth: (month: number) => SelectedDateAction;
+  setYear: (year: number) => SelectedDateAction;
   selectedDateReducer: { day: string; month: string; year: string };
   preset: [number, number, number];
 }
-
-type DateRangeInfo = {
-  days: number;
-  padding: number;
-};
-
-type MonthInfo = {
-  label: string;
-  number: number;
-};
 
 class CalendarComponent extends Component<PropRules, StateRules> {
   // State containing month and year values only used to adjust the calendar
@@ -278,7 +266,6 @@ class CalendarComponent extends Component<PropRules, StateRules> {
       if (i % 7 === 0 && i > 0) {
         allRows.push(<tr key={"month-row-id-" + i}>{singleRow}</tr>);
         singleRow = [];
-        console.log(i);
       }
 
       // Add blocks to current row
@@ -332,17 +319,13 @@ class CalendarComponent extends Component<PropRules, StateRules> {
     const localYear: number = this.getLocalYear();
 
     const optionElements: JSX.Element[] = years.map((year, index) => (
-      <option
-        value={year}
-        selected={year === localYear}
-        key={"calendar-selectable-year-id-" + index}
-      >
+      <option value={year} key={"calendar-selectable-year-id-" + index}>
         {year}
       </option>
     ));
 
     return (
-      <select title="Select year" onChange={handleChange}>
+      <select title="Select year" value={localYear} onChange={handleChange}>
         {optionElements}
       </select>
     );
@@ -360,7 +343,6 @@ class CalendarComponent extends Component<PropRules, StateRules> {
     const optionElements: JSX.Element[] = months.map((month, index) => (
       <option
         value={month.number}
-        selected={month.number === (localMonth % 12) + 1}
         key={"calendar-selectable-month-id-" + index}
       >
         {month.label}
@@ -368,7 +350,11 @@ class CalendarComponent extends Component<PropRules, StateRules> {
     ));
 
     return (
-      <select title="Select month" onChange={handleChange}>
+      <select
+        value={localMonth + 1}
+        title="Select month"
+        onChange={handleChange}
+      >
         {optionElements}
       </select>
     );
@@ -469,9 +455,6 @@ const mapDispatchToProps = (dispatch: any) => {
     },
     setYear: (year: number) => {
       return dispatch(setYear(year));
-    },
-    getDate: () => {
-      return dispatch(getDate());
     },
   };
 };
