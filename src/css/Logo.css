@@ -1,0 +1,17 @@
+#logo-section {
+  margin-left: 2rem;
+  margin: 10px 1rem;
+  position: relative;
+  padding-top: 1rem;
+}
+
+#logo-text {
+  color: #ffffff;
+  display: inline-block;
+  transform: translateY(-50%);
+}
+
+#logo-image {
+  position: absolute;
+  transform: translateY(-50%);
+}

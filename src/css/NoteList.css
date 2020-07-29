@@ -1,0 +1,28 @@
+.note-list-container {
+  margin: 1rem 0;
+  /*  background: #d3d3d385; */
+  background: #d3d3d385;
+  border-radius: 4px;
+  padding: 16px 32px !important;
+}
+
+.note-list-item {
+  background: #ffffff;
+  padding: 16px;
+  border-radius: 4px;
+  font-size: 16px;
+  margin: 16px 0px;
+  justify-content: space-between;
+}
+
+.note-list-item:first-child {
+  margin-top: 0px;
+}
+
+.note-list-item:last-child {
+  margin-bottom: 0px;
+}
+
+.note-item-manage-icon:last-child {
+  margin-left: 1rem;
+}

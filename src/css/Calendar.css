@@ -1,0 +1,47 @@
+.calendar-container {
+  border: 1px solid #e2e2e2;
+  background: #ffffff;
+  color: #626262;
+  position: absolute;
+  display: none;
+  z-index: 1000;
+}
+
+.calendar-table {
+  text-align: center;
+}
+
+.calendar-table > thead {
+  border-bottom: 1px solid #d2d2d2;
+}
+
+.calendar-table tr {
+  padding: 5px;
+}
+
+.calendar-table tr th {
+  padding: 5px;
+}
+
+.calendar-table tr td {
+  padding: 5px;
+  font-size: 0.9rem;
+}
+
+.calendar-nav-arrow {
+  margin: 0px 1rem;
+}
+
+.calendar-nav-arrow:hover {
+  cursor: pointer;
+}
+
+.calendar-padding-block {
+  color: #b2b2b2;
+}
+
+.calendar-date-block:hover {
+  cursor: pointer;
+  background: #d2d2d2;
+  border-radius: 20px;
+}
