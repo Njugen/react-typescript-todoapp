@@ -5,7 +5,14 @@ import DateSelectorComponent from "./components/DateSelector";
 
 import AddTodoComponent from "./components/AddTodo";
 import NoteListComponent from "./components/NoteList";
+
 function App() {
+  /* 
+    App.tsx
+
+    Setting up a basic JSX structure, containing separate components for Header, Status Section, Date Selector, Add Todo field, and Note list.
+    In this app, no state data is needed in the App() component and no logic is needed to handle events in the components included.
+  */
   return (
     <div className="container-fluid">
       <HeaderComponent />

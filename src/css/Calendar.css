@@ -32,6 +32,10 @@
   margin: 0px 1rem;
 }
 
+.calendar-nav-arrow:hover {
+  cursor: pointer;
+}
+
 .calendar-padding-block {
   color: #b2b2b2;
 }

@@ -1,25 +1,24 @@
 import React, { Component } from "react";
 import "./../css/NoteList.css";
 import IconComponent from "./Icon";
-import { connect } from "react-redux";
-import { deleteNote } from "../actions/notes/delete";
-interface StateRules {}
 
 interface PropRules {
-  id: number;
-  text: string;
-  cleared?: boolean;
-  onDeleteItem?: (itemId: number) => void;
-  onMarkAsCleared?: (itemId: number, cleared: boolean) => void;
+  id: number; // An unique id number representing this note. Used to target the component when, removing it or marking it as cleared
+  text: string; // The contents text representing the note itself.
+  cleared?: boolean; // A boolean variable telling us whether it has been cleared or not. (optional)
+  onDeleteItem?: (itemId: number) => void; // A function to be triggered when user clicks the trash icon. Raises the id number to parent component (optional)
+  onMarkAsCleared?: (itemId: number, cleared: boolean) => void; // A function to be triggered when the user marks the note as cleared. Raises the id number and the clear state to parent (optional)
 }
 
-type StatusProperties = {
+// Type containing various style information about the clear prop.
+type ClearLayoutProperties = {
   color: string;
   iconReference: string;
 };
 
-class NoteListItemComponent extends Component<PropRules, StateRules> {
-  getStatusProperties: () => StatusProperties = () => {
+class NoteListItemComponent extends Component<PropRules, {}> {
+  // Returning various style information provided by the clear prop. Just to avoid bloating the render function
+  private getClearProperties: () => ClearLayoutProperties = () => {
     const { cleared } = this.props;
 
     return {
@@ -33,11 +32,15 @@ class NoteListItemComponent extends Component<PropRules, StateRules> {
       text,
       id,
       cleared,
+
+      // Adding "Raise" suffix to these prop functions, to indicate that these props are meant to pass data to parent
+      // This is done just to avoid confusion, and is not really necessary
       onDeleteItem: onDeleteItemRaise,
       onMarkAsCleared: onMarkAsClearedRaise,
     } = this.props;
 
-    const status = this.getStatusProperties();
+    // Get info provided by the "cleared" prop, and use them as props in the clear icon.
+    const clearLayout: ClearLayoutProperties = this.getClearProperties();
 
     return (
       <div className="note-list-item row">
@@ -47,9 +50,10 @@ class NoteListItemComponent extends Component<PropRules, StateRules> {
         <div className="note-list-item-manage">
           {onMarkAsClearedRaise && (
             <IconComponent
-              iconReference={status.iconReference}
+              iconReference={clearLayout.iconReference}
               size={15}
-              color={status.color}
+              color={clearLayout.color}
+              // Raise the id (for targetting) and clear to parent component. If "cleared" is not set, we assume the note has not been cleared and set it to false
               onClick={() => onMarkAsClearedRaise(id, cleared || false)}
               className="note-item-manage-icon"
             />
@@ -59,6 +63,7 @@ class NoteListItemComponent extends Component<PropRules, StateRules> {
               iconReference="fas fa-trash"
               size={15}
               color="#dd0031"
+              // Raise the id to parent component
               onClick={() => onDeleteItemRaise(id)}
               className="note-item-manage-icon"
             />

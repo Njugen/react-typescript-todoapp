@@ -2,10 +2,7 @@ import React, { Component } from "react";
 import "./../css/AddTodo.css";
 import SingleLineFormComponent from "./SingleLineForm";
 import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 import { addNote } from "./../actions/notes/add";
-import SelectedDateReducer from "./../reducers/SelectedDate";
-import NotesReducer from "./../reducers/Notes";
 
 type ActionType = {
   type: string;
@@ -22,8 +19,6 @@ type Notes = {
   [key: number]: Note[];
 };
 
-interface StateRules {}
-
 interface PropRules {
   selectedDateReducer: {
     day: string;
@@ -34,17 +29,20 @@ interface PropRules {
   addNote: (dateKey: string, text: string) => ActionType;
 }
 
-class AddTodoComponent extends Component<PropRules, StateRules> {
+class AddTodoComponent extends Component<PropRules, {}> {
+  // Function meant to handle the event triggered by the button click in SingleLineFormComponent.
+  // This adds the note to redux store
   handleLineFormRaise: (event: React.FormEvent, inputValue: string) => void = (
     event,
     inputValue
   ) => {
+    const { addNote } = this.props;
     event.preventDefault();
 
     const { day, month, year } = this.props.selectedDateReducer;
     const dataKey: string = day + "" + month + "" + year;
 
-    this.props.addNote(dataKey, inputValue);
+    addNote(dataKey, inputValue);
   };
 
   render = () => {
@@ -64,7 +62,6 @@ class AddTodoComponent extends Component<PropRules, StateRules> {
 }
 
 const mapStateToProps = (state: any) => {
-  console.log("ÄÄÄ", state);
   return {
     selectedDateReducer: state.SelectedDateReducer,
     notesReducer: state.NotesReducer,
@@ -72,7 +69,6 @@ const mapStateToProps = (state: any) => {
 };
 
 const mapDispatchToProps = (dispatch: any) => {
-  console.log("DDDD");
   return {
     addNote: (dateKey: string, text: string) => {
       return dispatch(addNote(dateKey, text));
@@ -81,4 +77,3 @@ const mapDispatchToProps = (dispatch: any) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddTodoComponent);
-//export default AddTodoComponent;

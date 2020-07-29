@@ -3,33 +3,22 @@ import "./../css/NoteList.css";
 import NoteListItemComponent from "./NoteListItem";
 import { getAllNotes } from "./../actions/notes/get";
 import { connect } from "react-redux";
-import NotesReducer from "./../reducers/Notes";
 import { deleteNote } from "../actions/notes/delete";
 import { clearNote } from "./../actions/notes/clear";
 
-interface StateRules {}
-
 interface PropRules {
-  getAllNotes: (dateKey: string) => void;
-  deleteNote: (dateKey: string, id: number) => void;
-  clearNote: (dateKey: string, id: number, cleared: boolean) => void;
-  notesReducer: any;
+  getAllNotes: (dateKey: string) => void; // Get all notes of a certain date from redux store by dateKey
+  deleteNote: (dateKey: string, id: number) => void; // Delete a note of a certain day by note id
+  clearNote: (dateKey: string, id: number, cleared: boolean) => void; // Mark a note of a certain day as cleared/not cleared by id
+  notesReducer: any; // The notes reducer, which provides notes data based on changes done by given actions
+
+  // The selected date reducer, which provides the date selected in the calendar (a date is considered selected when a date is clicked, not when a year or month is chosen)
   selectedDateReducer: {
-    day: string;
-    month: string;
-    year: string;
+    day: string; // The number of the selected day, provided in string format from 0-31, 01, 02, 03... 28, 29, 30, 31
+    month: string; // The number of the month where the selected day is listed under, provided in string format from 0-31, 01, 02, 03... 11, 12
+    year: string; // The number of year (4 digits) where the selected day and selected month are listed under. Provided as string.
   };
 }
-
-type ActionType = {
-  type: string;
-  payload: {
-    dateKey: string;
-    text?: string;
-    cleared?: boolean;
-    id?: number;
-  };
-};
 
 type Note = {
   id: number;
@@ -37,81 +26,83 @@ type Note = {
   cleared?: boolean;
 };
 
-type Notes = {
-  [key: number]: Note[];
-};
+class NoteListComponent extends Component<PropRules, {}> {
+  // A handler used to delete a targetted note by its id. The id is raised from the targetted <NoteListItem> component
+  private handleDeleteItem: (itemId: number) => void = (itemId) => {
+    const { deleteNote } = this.props;
 
-class NoteListComponent extends Component<PropRules, StateRules> {
-  handleDeleteItem: (itemId: number) => void = (itemId) => {
     const { day, month, year } = this.props.selectedDateReducer;
-    const dataKey: string = day + "" + month + "" + year;
+    const dateKey: string = day + "" + month + "" + year;
 
-    this.props.deleteNote(dataKey, itemId);
+    deleteNote(dateKey, itemId);
   };
 
-  handleMarkAsCleared: (itemId: number, clear: boolean) => void = (
+  // A handler used to mark or unmark a note by its id (checking/clearing the note as fulfilled). The id is raised from the targetted <NoteListItem> component
+  private handleMarkAsCleared: (itemId: number, clear: boolean) => void = (
     itemId,
     clear
   ) => {
+    const { clearNote } = this.props;
+
     const { day, month, year } = this.props.selectedDateReducer;
-    const dataKey: string = day + "" + month + "" + year;
+    const dateKey: string = day + "" + month + "" + year;
 
-    this.props.clearNote(dataKey, itemId, !clear ? true : false);
+    clearNote(dateKey, itemId, !clear ? true : false);
   };
 
-  getAllNotes: (dateKey: string) => Note[] = (dateKey) => {
-    //   this.props.getAllNotes(dateKey);
-    console.log("INNN", this.props.notesReducer[dateKey]);
-    return this.props.notesReducer[dateKey];
-  };
-
-  componentDidMount = () => {};
-
-  componentDidUpdate = () => {
-    console.log("U");
+  // Get all notes of a certain date by using its dateKey. If no notes exists, return an empty array
+  private getAllNotes: (dateKey: string) => Note[] = (dateKey) => {
+    return this.props.notesReducer[dateKey] || [];
   };
 
   render = () => {
     const { day, month, year } = this.props.selectedDateReducer;
-    const dataKey: string = day + "" + month + "" + year;
+    const dateKey: string = day + "" + month + "" + year;
 
-    const notes: Note[] = this.getAllNotes(dataKey);
-    console.log("XI");
+    // Get all notes in this date by dateKey and store it in a variable, preparing for mapping.
+    const notes: Note[] = this.getAllNotes(dateKey);
 
     return (
       <div className="note-list-container container">
-        {Array.isArray(notes) && notes.length > 0 ? (
-          notes.map((note, index) => (
+        {
+          // If there are notes of this dateKey, map each of them to the <NoteListItemComponent> with necessary props.
+          // If there are no notes of this dateKey, use one <NoteListItemComponent> to display a message
+          notes.length > 0 ? (
+            notes.map((note) => (
+              <NoteListItemComponent
+                id={note.id}
+                text={note.text}
+                cleared={note.cleared}
+                onDeleteItem={this.handleDeleteItem}
+                onMarkAsCleared={this.handleMarkAsCleared}
+                key={"noteId-" + note.id}
+              />
+            ))
+          ) : (
             <NoteListItemComponent
-              id={note.id}
-              text={note.text}
-              cleared={note.cleared}
-              onDeleteItem={this.handleDeleteItem}
-              onMarkAsCleared={this.handleMarkAsCleared}
-              key={"noteId-" + index}
+              id={0}
+              text="There are currently no notes assigned to this date"
             />
-          ))
-        ) : (
-          <NoteListItemComponent
-            id={0}
-            text="There are currently no notes assigned to this date"
-          />
-        )}
+          )
+        }
       </div>
     );
   };
 }
 
+// Get the state data set by SelectedDateReducer and NotesReducer, and apply them to this component's props.
+// Access the redux states like this:
+// this.props.selectedDateReducer, this.props.notesReducer, etc
 const mapStateToProps = (state: any) => {
-  console.log("HNN", state);
   return {
     selectedDateReducer: state.SelectedDateReducer,
     notesReducer: state.NotesReducer,
   };
 };
 
+// Place all redux actions into the component's props. Call them like this:
+// this.props.REDUX_ACTION()
 const mapDispatchToProps = (dispatch: any) => {
-  console.log("TTT");
   return {
     getAllNotes: (dateKey: string) => {
       return dispatch(getAllNotes(dateKey));
@@ -125,4 +116,5 @@ const mapDispatchToProps = (dispatch: any) => {
   };
 };
 
+// Wrap NoteListComponent in a redux wrapper containing the redux based states and actions, then export
 export default connect(mapStateToProps, mapDispatchToProps)(NoteListComponent);

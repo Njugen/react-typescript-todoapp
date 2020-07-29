@@ -19,23 +19,25 @@ type Notes = {
 };
 
 const NotesReducer: (state: Notes, action: ActionType) => void = (
-  state = { "": [] },
+  state = {},
   action
 ) => {
   const { type } = action;
 
   switch (type) {
     case "ADD_NOTE":
-      console.log("PAYLOAD", state);
       const { payload } = action;
-      const { dateKey, text, cleared, id } = payload;
+      const { dateKey, text, cleared } = payload;
 
       let newId = 0;
 
       if (!Array.isArray(state[dateKey])) state[dateKey] = [];
 
-      // Get the highest id number currently existing, and use that as a new id
-      console.log("V", ...state[dateKey].map((noteItem) => noteItem.id));
+      /*
+        Get the highest id number currently existing, and use that as a new id as it will always be unique in the 
+        note list array. Another solution could be to just use a random hex/string...
+      */
+
       if (state[dateKey].length === 0) {
         newId = 0;
       } else {
@@ -56,6 +58,11 @@ const NotesReducer: (state: Notes, action: ActionType) => void = (
       state[dateKey2] = state[dateKey2].filter(
         (noteItem) => noteItem.id !== id2
       );
+
+      // Remove the date from state, if it no longer contains notes.
+      if (state[dateKey2].length === 0) {
+        delete state[dateKey2];
+      }
 
       return { ...state };
     case "GET_NOTE":
