@@ -32,6 +32,9 @@ class CalendarComponent extends Component<PropRules, StateRules> {
     localYear: this.props.preset[2],
   };
 
+  private calendarYearRangeStart: number = 2010;
+  private calendarYearRangeEnd: number = 2030;
+
   // Return the month number currently set by component state
   private getLocalMonth: () => number = () => {
     return this.state.localMonth;
@@ -257,20 +260,29 @@ class CalendarComponent extends Component<PropRules, StateRules> {
     const { localMonth, localYear } = this.state;
     const { setDay, setMonth, setYear } = this.props;
 
-    setDay(dateNumber);
-
-    const newMonthValue = localMonth + monthOffset;
+    const newMonthValue: number = localMonth + monthOffset; // month taken from state + function offset argument
+    let forcedMonthValue: number; // specific month to be enforced by this function
 
     if (newMonthValue >= 12) {
-      setMonth(0);
+      forcedMonthValue = 0;
       yearOffset = 1;
     } else if (newMonthValue < 0) {
-      setMonth(11);
+      forcedMonthValue = 11;
       yearOffset = -1;
     } else {
-      setMonth(newMonthValue);
+      forcedMonthValue = newMonthValue;
     }
-    setYear(localYear + yearOffset);
+
+    const newYearValue = localYear + yearOffset;
+
+    if (
+      newYearValue >= this.calendarYearRangeStart &&
+      newYearValue <= this.calendarYearRangeEnd
+    ) {
+      setDay(dateNumber);
+      setMonth(forcedMonthValue);
+      setYear(newYearValue);
+    }
   };
 
   private renderDays: (month: number, year: number) => JSX.Element = (
@@ -460,7 +472,11 @@ class CalendarComponent extends Component<PropRules, StateRules> {
             onClick={() => this.setLocalMonthState(localMonth - 1)}
           />
           {this.renderMonthSelector(this.handleMonthSelectorChange)}
-          {this.renderYearSelector(2010, 2030, this.handleYearSelectorChange)}
+          {this.renderYearSelector(
+            this.calendarYearRangeStart,
+            this.calendarYearRangeEnd,
+            this.handleYearSelectorChange
+          )}
           <IconComponent
             iconReference="fas fa-angle-right"
             className="calendar-nav-arrow"
