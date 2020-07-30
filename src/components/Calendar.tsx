@@ -262,13 +262,13 @@ class CalendarComponent extends Component<PropRules, StateRules> {
     let forcedMonthValue: number; // specific month to be enforced by this function
 
     if (newMonthValue >= 12) {
-      forcedMonthValue = 0;
+      forcedMonthValue = 1;
       yearOffset = 1;
     } else if (newMonthValue < 0) {
-      forcedMonthValue = 11;
+      forcedMonthValue = 12;
       yearOffset = -1;
     } else {
-      forcedMonthValue = newMonthValue;
+      forcedMonthValue = newMonthValue + 1;
     }
 
     const newYearValue = localYear + yearOffset;
